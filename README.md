@@ -8,13 +8,12 @@ Adapted from [Alex J. Lee’s Bash and Wynton lesson](https://github.com/alexj-l
 [Open slides](https://BennyKrup.github.io/bash-wynton/)
 
 - Arrow keys / Space: advance; Esc: overview; F: fullscreen; S: speaker view.
-- [Project examples](https://BennyKrup.github.io/bash-wynton/#/research-workflows)
+- [Practical HPC tips](https://BennyKrup.github.io/bash-wynton/#/hpc-tips)
 - [CoreHPC transition](https://BennyKrup.github.io/bash-wynton/#/corehpc)
 
 ## September 2026 updates
 
-- MPRAbase2 shared-sequence workflows: manifests, metadata, comparison units and validation.
-- PhyloAcc: reusable inputs, species/model compatibility, arrays, retries and completion audits.
+- One practical HPC tips slide: small tests, clear failures, stable inputs, thread allocation and output checks.
 - CoreHPC transition, SGE-to-Slurm commands, an illustrative array template and migration checks.
 - Old course-specific signup instructions removed; author attribution and license preserved.
 - Speaker notes hidden from audience view; use S for presenter mode.

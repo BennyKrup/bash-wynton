@@ -42,7 +42,7 @@
 <p>Wynton today · CoreHPC and Slurm next</p>
 <p>Beniamin Krupkin · September 9, 2026</p>
 <p style="font-size:30px">Adapted from <a href="https://alexj-lee.github.io/bash-wynton/">Alex J. Lee’s Bash &amp; Wynton lesson</a></p>
-<p style="font-size:30px"><a href="#/research-workflows">Project examples</a> · <a href="#/corehpc">CoreHPC transition</a></p>
+<p style="font-size:30px"><a href="#/hpc-tips">Practical HPC tips</a> · <a href="#/corehpc">CoreHPC transition</a></p>
 			</section>
 
 			<section id="whybash">
@@ -1127,31 +1127,16 @@ python someprogram.py ${NTH_FILE}
 				</div>
 			</section>
 
-<section id="research-workflows" class="update-slide">
-<h2>Research workflows: the same Bash skills</h2>
-<table><thead><tr><th>Project</th><th>Natural unit of work</th><th>What to record</th></tr></thead><tbody>
-<tr><td>MPRAbase2</td><td>Dataset / cell type / assay comparison</td><td>Sequence IDs, genome build, assay metadata</td></tr>
-<tr><td>PhyloAcc</td><td>Chromosome extraction → locus batches</td><td>Species list, tree, model, batch manifest</td></tr>
-</tbody></table>
-<p>One versioned manifest → many jobs → validated outputs → combined results</p>
-<aside class="notes">Use the projects as workflow examples rather than claiming new biological results. Emphasize that a manifest is an explicit, stable list of inputs. Do not edit it while its array is running.</aside>
-</section>
-<section id="mprabase2" class="update-slide">
-<h2>MPRAbase2: reproducible comparisons</h2>
-<ul><li>Compare shared sequences within and between cell types and MPRA methods.</li>
-<li>Keep controls and cCRE annotations explicit; match sequence identity and genome build.</li>
-<li>Store inputs, assay metadata and analysis settings in versioned manifests.</li>
-<li>Run independent dataset comparisons as array tasks; gather only validated outputs.</li></ul>
-<p>Keep sample counts and missing-data checks beside each figure.</p>
-<aside class="notes">Based on the current shared-sequence analysis plan: control versus cCRE distributions, within cell type, between cell types, and across assay methods. Do not treat raw activity scales from different assays as automatically comparable. These are workflow recommendations, not a report of final scientific findings.</aside>
-</section>
-<section id="phyloacc" class="update-slide">
-<h2>PhyloAcc: arrays, dependencies and recovery</h2>
-<p>Validate species / tree → extract alignments + fit neutral models<br>→ PhyloAcc batches → audit / retry → gather</p>
-<ul><li>Reuse compatible CNEE coordinates; changing species can require new alignments and neutral models.</li>
-<li>Use separate resource settings for unusually large batches.</li>
-<li>Retry incomplete batches, then verify expected loci before marking the pipeline complete.</li></ul>
-<aside class="notes">This mirrors the recent PhyloAcc handoff. An empty queue alone is not evidence of completion. Preserve the species list, model inputs, seeds, code version and completion audit. Avoid copying user-specific absolute home paths into shared pipelines.</aside>
+<section id="hpc-tips" class="update-slide">
+<h2>Practical HPC tips</h2>
+<ul>
+<li><strong>Test small:</strong> run one input before submitting a large array.</li>
+<li><strong>Make failures visible:</strong> use <code>set -euo pipefail</code> and save a separate log for each task.</li>
+<li><strong>Keep inputs predictable:</strong> quote paths (<code>"$input"</code>) and freeze the input list while jobs run.</li>
+<li><strong>Match threads to resources:</strong> set your program’s thread count to the CPUs requested.</li>
+<li><strong>Check outputs before retrying:</strong> an empty queue does not prove success; rerun only failed or incomplete tasks.</li>
+</ul>
+<aside class="notes">These habits apply across schedulers. Strict Bash settings help expose failures, but expected nonzero exit codes still need explicit handling. Check logs, exit status and expected output content before marking a run complete.</aside>
 </section>
 <section id="corehpc" class="update-slide">
 <h2>Wynton retirement and CoreHPC</h2>
@@ -1201,7 +1186,7 @@ python analysis.py --input "$input" --threads "$SLURM_CPUS_PER_TASK"</code></pre
 <li>Compare results, logs, memory use and run time; verify output counts before scaling up.</li></ul>
 <p>Keep data and code portable; make scheduler settings a separate configuration.</p>
 <p class="source"><a href="https://it.ucsf.edu/service/corehpc">CoreHPC access and onboarding</a> · <a href="https://slurm.schedmd.com/sbatch.html">Slurm resource and dependency options</a></p>
-<aside class="notes">A dependency that waits for completion is not necessarily a success check. Slurm afterok requires successful exit codes, so scripts must propagate failures. Keep the explicit output audit used by the PhyloAcc workflow. Confirm retention, quotas and transfer procedures before moving full datasets.</aside>
+<aside class="notes">A dependency that waits for completion is not necessarily a success check. Slurm afterok requires successful exit codes, so scripts must propagate failures. Keep an explicit output audit before marking a workflow complete. Confirm retention, quotas and transfer procedures before moving full datasets.</aside>
 </section>
 			<section>
 				<h1>Questions?</h1>
