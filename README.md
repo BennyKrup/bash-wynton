@@ -1,21 +1,39 @@
-<p align="center">
-  <a href="https://revealjs.com">
-  <img src="https://hakim-static.s3.amazonaws.com/reveal-js/logo/v1/reveal-black-text.svg" alt="reveal.js" width="450">
-  </a>
-  <br><br>
-  <a href="https://github.com/hakimel/reveal.js/actions"><img src="https://github.com/hakimel/reveal.js/workflows/tests/badge.svg"></a>
-  <a href="https://slides.com/"><img src="https://s3.amazonaws.com/static.slid.es/images/slides-github-banner-320x40.png?1" alt="Slides" width="160" height="20"></a>
-</p>
+# Bash, Wynton and CoreHPC
 
-# Reveal js template for my presentations. 
+Presentation by Beniamin Krupkin, September 9, 2026.
+Adapted from [Alex J. Lee’s Bash and Wynton lesson](https://github.com/alexj-lee/bash-wynton), preserving the original lesson and Reveal.js assets. Original license retained.
 
-## Changelog:
+## Present
 
-### 2022-09-09
-	* added tailwind CDN + normal plugins
+[Open slides](https://BennyKrup.github.io/bash-wynton/)
+
+- Arrow keys / Space: advance; Esc: overview; F: fullscreen; S: speaker view.
+- [Project examples](https://BennyKrup.github.io/bash-wynton/#/research-workflows)
+- [CoreHPC transition](https://BennyKrup.github.io/bash-wynton/#/corehpc)
+
+## September 2026 updates
+
+- MPRAbase2 shared-sequence workflows: manifests, metadata, comparison units and validation.
+- PhyloAcc: reusable inputs, species/model compatibility, arrays, retries and completion audits.
+- CoreHPC transition, SGE-to-Slurm commands, an illustrative array template and migration checks.
+- Old course-specific signup instructions removed; author attribution and license preserved.
+- Speaker notes hidden from audience view; use S for presenter mode.
+
+Official Wynton retirement is **early March 2027**, per the [March 1, 2026 announcement](https://wynton.ucsf.edu/hpc/about/news.html). February 2027 is a suggested migration target, not the official retirement date. The presenter supplied the Slurm transition information; CoreHPC account/partition/storage details need confirmation through [UCSF onboarding](https://it.ucsf.edu/service/corehpc).
+
+The original Wynton material is historical SGE training, not a current CoreHPC operations manual. The Slurm example is a teaching template; its resources and analysis.py are illustrative. No cluster jobs were submitted or validated by preparing this deck.
+
+## Local preview
+
+Run `python3 -m http.server 8765` in this folder and open http://localhost:8765/. The original lesson uses external Tailwind/font assets, so a network connection is recommended.
+
+## Sources
+
+- https://wynton.ucsf.edu/hpc/about/news.html
+- https://it.ucsf.edu/service/corehpc
+- https://slurm.schedmd.com/sbatch.html
+- https://slurm.schedmd.com/job_array.html
 
 ## License
 
-MIT licensed
-
-Copyright (C) 2011-2021 Hakim El Hattab, https://hakim.se
+MIT; see LICENSE for original Reveal.js copyright and terms.

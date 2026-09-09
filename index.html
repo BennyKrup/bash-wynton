@@ -1,11 +1,11 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title> A review of Bash and UCSF Wynton </title>
+	<title>Bash, Wynton &amp; CoreHPC — Beniamin Krupkin</title>
 
 	<link rel="stylesheet" href="dist/reset.css">
 	<link rel="stylesheet" href="dist/reveal.css">
@@ -20,13 +20,28 @@
 	<!-- Theme used for syntax highlighted code -->
 	<link rel="stylesheet" href="plugin/highlight/monokai.css">
 
+<style>
+.reveal .update-slide { box-sizing:border-box; padding:48px 100px; font-size:43px; }
+.reveal .update-slide h2 { font-size:76px; margin-bottom:48px; }
+.reveal .update-slide li { margin:24px 0; line-height:1.35; }
+.reveal .update-slide table { font-size:36px; width:100%; }
+.reveal .update-slide td,.reveal .update-slide th { padding:22px; }
+.reveal .update-slide p { margin:32px 0; }
+.reveal .update-slide .source { font-size:27px; line-height:1.45; }
+.reveal .update-slide pre { font-size:30px; width:94%; }
+.reveal .update-slide pre code { max-height:620px; padding:25px; }
+</style>
 </head>
 
 <body>
 	<div class="reveal">
 		<div class="slides">
 			<section>
-				<h1> A short review of bash and associated *nix utilities </h1>
+				<h1>Bash and research computing</h1>
+<p>Wynton today · CoreHPC and Slurm next</p>
+<p>Beniamin Krupkin · September 9, 2026</p>
+<p style="font-size:30px">Adapted from <a href="https://alexj-lee.github.io/bash-wynton/">Alex J. Lee’s Bash &amp; Wynton lesson</a></p>
+<p style="font-size:30px"><a href="#/research-workflows">Project examples</a> · <a href="#/corehpc">CoreHPC transition</a></p>
 			</section>
 
 			<section id="whybash">
@@ -269,8 +284,7 @@
 				<section>
 					<h1> <code> screen</code> (or <code>nohup</code>) </h1>
 
-					<p> <code> Screen</code> (and <code>nohup</code>) help you when you need to run programs for a long
-						time.
+					<p> <code> Screen</code> and <code>nohup</code> preserve sessions/processes after disconnecting. They do not allocate compute resources; submit heavy work through the scheduler.
 
 						<br>
 						<br>
@@ -295,7 +309,7 @@
 
 					<pre><code data-trim>
 							nohup python longprojectcode.py & # run persistently, output will go to nohup.out
-							nohup python longprojectcode.py > output-and-errors.txt # output and errors to file
+							nohup python longprojectcode.py > output-and-errors.txt 2>&amp;1 &amp; # output and errors to file
 							nohup python longprojectcode.py 1> output.txt 2> errors.txt # run code and write output/error to separate files
 							nohup bash -c "mkdir outputdir && python someprogram.py --input rawdata --output outputdir" # run a chained command
 						</code></pre>
@@ -387,7 +401,7 @@ Host dhcp
 			</section>
 
 			<section>
-				<h1>Introduction to Wynton</h1>
+				<h1>Introduction to Wynton</h1><p>Existing Wynton workflows use SGE. <a href="#/corehpc">See the CoreHPC / Slurm update.</a></p>
 				Also: see <a href="https://wynton.ucsf.edu">https://wynton.ucsf.edu</a> and <a
 					href="https://ucsf-wynton.slack.com/">https://ucsf-wynton.slack.com/</a>
 			</section>
@@ -1112,36 +1126,86 @@ python someprogram.py ${NTH_FILE}
 				</div>
 			</section>
 
-			<section>
-				<h1> The last part: signing up </h1>
-
-				<span class="text-5xl">
-					<br>
-					Go to: <a class=""
-						href=" https://wynton.ucsf.edu/hpc/about/join.html">https://wynton.ucsf.edu/hpc/about/join.html</a>
-					<br>
-					(make sure you are on VPN or log in to MyAccess)
-				</span>
-
-				<p class="text-5xl">
-					<br>
-					Fill out the form: make sure for this year to include Katie Pollard as PI (Approver name)
-
-					<br> <br>
-
-					Put in the comments section that it is for "bmi206".
-
-					<br> <br>
-					You need to reset your password after some period, so try not to forget or else you'll have to email
-					an admin and asked them to reset it (slow). Ideally: set up RSA key login.
-				</p>
-
-			</section>
+<section id="research-workflows" class="update-slide">
+<h2>Research workflows: the same Bash skills</h2>
+<table><thead><tr><th>Project</th><th>Natural unit of work</th><th>What to record</th></tr></thead><tbody>
+<tr><td>MPRAbase2</td><td>Dataset / cell type / assay comparison</td><td>Sequence IDs, genome build, assay metadata</td></tr>
+<tr><td>PhyloAcc</td><td>Chromosome extraction → locus batches</td><td>Species list, tree, model, batch manifest</td></tr>
+</tbody></table>
+<p>One versioned manifest → many jobs → validated outputs → combined results</p>
+<aside class="notes">Use the projects as workflow examples rather than claiming new biological results. Emphasize that a manifest is an explicit, stable list of inputs. Do not edit it while its array is running.</aside>
+</section>
+<section id="mprabase2" class="update-slide">
+<h2>MPRAbase2: reproducible comparisons</h2>
+<ul><li>Compare shared sequences within and between cell types and MPRA methods.</li>
+<li>Keep controls and cCRE annotations explicit; match sequence identity and genome build.</li>
+<li>Store inputs, assay metadata and analysis settings in versioned manifests.</li>
+<li>Run independent dataset comparisons as array tasks; gather only validated outputs.</li></ul>
+<p>Keep sample counts and missing-data checks beside each figure.</p>
+<aside class="notes">Based on the current shared-sequence analysis plan: control versus cCRE distributions, within cell type, between cell types, and across assay methods. Do not treat raw activity scales from different assays as automatically comparable. These are workflow recommendations, not a report of final scientific findings.</aside>
+</section>
+<section id="phyloacc" class="update-slide">
+<h2>PhyloAcc: arrays, dependencies and recovery</h2>
+<p>Validate species / tree → extract alignments + fit neutral models<br>→ PhyloAcc batches → audit / retry → gather</p>
+<ul><li>Reuse compatible CNEE coordinates; changing species can require new alignments and neutral models.</li>
+<li>Use separate resource settings for unusually large batches.</li>
+<li>Retry incomplete batches, then verify expected loci before marking the pipeline complete.</li></ul>
+<aside class="notes">This mirrors the recent PhyloAcc handoff. An empty queue alone is not evidence of completion. Preserve the species list, model inputs, seeds, code version and completion audit. Avoid copying user-specific absolute home paths into shared pipelines.</aside>
+</section>
+<section id="corehpc" class="update-slide">
+<h2>Wynton retirement and CoreHPC</h2>
+<p><strong>Official Wynton retirement: early March 2027</strong></p>
+<p>Suggested migration target: February 2027</p>
+<ul><li>Move new work toward FAC / CoreHPC.</li><li>Prepare job scripts for the Slurm environment.</li>
+<li>Confirm account, partition, storage paths and software setup during onboarding.</li></ul>
+<p class="source">Wynton announcement, March 1, 2026: <a href="https://wynton.ucsf.edu/hpc/about/news.html">wynton.ucsf.edu/hpc/about/news.html</a><br><a href="https://it.ucsf.edu/service/corehpc">CoreHPC onboarding (UCSF MyAccess)</a></p>
+<aside class="notes">The presenter reports that the replacement environment uses Slurm. Public Wynton documentation confirms retirement in early March 2027 and recommends FAC/CoreHPC for new projects. February is a suggested planning deadline, not a verified official shutdown date. CoreHPC configuration is behind MyAccess; verify local partition/account/storage details there.</aside>
+</section>
+<section id="slurm-commands" class="update-slide">
+<h2>SGE → Slurm: everyday commands</h2>
+<table><thead><tr><th>Task</th><th>Wynton / SGE</th><th>Slurm</th></tr></thead><tbody>
+<tr><td>Submit</td><td><code>qsub job.sh</code></td><td><code>sbatch job.sh</code></td></tr>
+<tr><td>Monitor</td><td><code>qstat -u "$USER"</code></td><td><code>squeue -u "$USER"</code></td></tr>
+<tr><td>Cancel</td><td><code>qdel JOB_ID</code></td><td><code>scancel JOB_ID</code></td></tr>
+<tr><td>Array index</td><td><code>$SGE_TASK_ID</code></td><td><code>$SLURM_ARRAY_TASK_ID</code></td></tr>
+<tr><td>Threads allocated</td><td><code>$NSLOTS</code></td><td><code>$SLURM_CPUS_PER_TASK</code></td></tr>
+</tbody></table>
+<p>Recheck memory semantics: Slurm <code>--mem</code> is per node;<br><code>--mem-per-cpu</code> is per allocated CPU.</p>
+<p class="source"><a href="https://slurm.schedmd.com/sbatch.html">Slurm sbatch documentation</a></p>
+<aside class="notes">These are generic Slurm examples. Set cpus-per-task explicitly before relying on its environment variable. Do not mechanically copy Wynton mem_free or scratch requests; confirm the new site's resource and storage policies.</aside>
+</section>
+<section id="slurm-example" class="update-slide">
+<h2>A Slurm array template</h2>
+<pre><code class="language-bash" data-trim>#!/usr/bin/env bash
+#SBATCH --job-name=analysis
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --time=02:00:00
+#SBATCH --array=1-20%5
+#SBATCH --output=logs/%x-%A_%a.out
+set -euo pipefail
+input=$(sed -n "${SLURM_ARRAY_TASK_ID}p" inputs.txt)
+[[ -n "$input" &amp;&amp; -f "$input" ]] || exit 1
+export OMP_NUM_THREADS="$SLURM_CPUS_PER_TASK"
+python analysis.py --input "$input" --threads "$SLURM_CPUS_PER_TASK"</code></pre>
+<p class="source">Teaching template: 20 input paths, no header. Create <code>logs/</code> before submitting.<br>Replace <code>analysis.py</code>, activate your environment, and set the assigned account / partition.</p>
+<aside class="notes">Run mkdir -p logs before sbatch. Resource numbers are illustrative, not measured project requirements. The percent-five suffix limits concurrent tasks to five. Slurm does not copy input files for you. Source: https://slurm.schedmd.com/job_array.html and https://slurm.schedmd.com/sbatch.html</aside>
+</section>
+<section id="migration-checklist" class="update-slide">
+<h2>Before moving the full workflow</h2>
+<ul><li>Inventory inputs, reference genomes, environments and storage requirements.</li>
+<li>Replace SGE directives and dependencies; use Slurm <code>afterok</code> for success-dependent stages.</li>
+<li>Run one small representative job, then a small array.</li>
+<li>Compare results, logs, memory use and run time; verify output counts before scaling up.</li></ul>
+<p>Keep data and code portable; make scheduler settings a separate configuration.</p>
+<p class="source"><a href="https://it.ucsf.edu/service/corehpc">CoreHPC access and onboarding</a> · <a href="https://slurm.schedmd.com/sbatch.html">Slurm resource and dependency options</a></p>
+<aside class="notes">A dependency that waits for completion is not necessarily a success check. Slurm afterok requires successful exit codes, so scripts must propagate failures. Keep the explicit output audit used by the PhyloAcc workflow. Confirm retention, quotas and transfer procedures before moving full datasets.</aside>
+</section>
 			<section>
 				<h1>Questions?</h1>
 
-				<h4 class="text-5xl">Make sure to check on the Wynton slack or Wynton website if you have other
-					questions.</h4>
+				<h4 class="text-5xl">Resources: Wynton documentation, CoreHPC onboarding, and Slurm documentation.</h4>
 
 			</section>
 
@@ -1163,7 +1227,8 @@ python someprogram.py ${NTH_FILE}
 		// - https://revealjs.com/initialization/
 		// - https://revealjs.com/config/
 		Reveal.initialize({
-			showNotes: "separate-page",
+			showNotes: false,
+            slideNumber: "c/t",
 			hash: true,
 			center: true,
 			margin: 0,
